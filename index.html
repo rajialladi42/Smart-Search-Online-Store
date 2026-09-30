@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Search Online Store | AVL Tree & Python Cosine Similarity</title>
+  <meta name="description" content="College Mini-Project: Smart Search Autocomplete for an Online Store featuring AVL Tree indexing, DMGT set operations, OOP design, and Python cosine similarity recommendations.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        <span>SmartStore</span>
+      </a>
+
+      <!-- Navbar Autocomplete Search -->
+      <div class="nav-search-bar">
+        <div class="search-wrapper">
+          <div class="search-input-box">
+            <span class="search-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <input type="text" id="nav-search-input" placeholder="Search 5,000+ products (e.g. 'lap')..." autocomplete="off">
+            <span class="search-badge-avl">AVL Tree</span>
+          </div>
+          <div id="nav-autocomplete-dropdown" class="autocomplete-dropdown"></div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="index.html" class="nav-link active">Home</a></li>
+          <li><a href="products.html" class="nav-link">Products</a></li>
+          <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="orders.html" class="nav-link">My Orders</a></li>
+          <li>
+            <a href="cart.html" class="cart-icon-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              <span>Cart</span>
+              <span class="cart-badge" style="display:none;">0</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle Navigation">
+        ☰
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section with Smart Search -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        ADSA • DMGT • OOP • Python Mini-Project
+      </div>
+
+      <h1 class="hero-title">
+        Smart Search Autocomplete for <span>Online Store</span>
+      </h1>
+      <p class="hero-subtitle">
+        High-performance electronics shopping with an authentic Self-Balancing AVL Tree index, Discrete Mathematics Set Theory filtering, and Dynamic Cosine Similarity recommendations.
+      </p>
+
+      <!-- Primary Big Search Bar -->
+      <div class="hero-search-container">
+        <div class="search-wrapper">
+          <div class="hero-search-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="hero-search-input" placeholder="Type 'lap' to see live AVL Tree autocomplete..." autocomplete="off">
+            <button class="hero-search-btn" id="hero-search-submit">
+              <span>Search</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </div>
+          <div id="hero-autocomplete-dropdown" class="autocomplete-dropdown"></div>
+        </div>
+      </div>
+
+      <!-- Quick Tag Triggers -->
+      <div class="hero-quick-tags">
+        <span>Try searching:</span>
+        <button class="hero-tag" onclick="quickSearch('lap')">lap</button>
+        <button class="hero-tag" onclick="quickSearch('laptop')">laptop</button>
+        <button class="hero-tag" onclick="quickSearch('headphone')">headphone</button>
+        <button class="hero-tag" onclick="quickSearch('smart watch')">smart watch</button>
+        <button class="hero-tag" onclick="quickSearch('apple')">apple</button>
+        <button class="hero-tag" onclick="quickSearch('keyboard')">keyboard</button>
+        <button class="hero-tag" onclick="quickSearch('monitor')">monitor</button>
+      </div>
+
+      <!-- Live Statistics Audit -->
+      <div class="hero-stats-bar">
+        <div class="hero-stat-card">
+          <div class="stat-icon">🌲</div>
+          <div>
+            <div class="stat-num" id="stat-tree-height">16</div>
+            <div class="stat-label">AVL Tree Height (Balanced)</div>
+          </div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-icon">📦</div>
+          <div>
+            <div class="stat-num" id="stat-total-prods">5,050</div>
+            <div class="stat-label">Indexed Products</div>
+          </div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-icon">⚡</div>
+          <div>
+            <div class="stat-num">&lt; 1 ms</div>
+            <div class="stat-label">O(log N) Lookup Speed</div>
+          </div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="stat-icon">🧠</div>
+          <div>
+            <div class="stat-num">TF-IDF</div>
+            <div class="stat-label">Cosine Similarity Engine</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Grid -->
+  <section class="section-container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Explore Categories</h2>
+        <p class="section-subtitle">Browse through 15 electronics categories powered by DMGT Set Operations</p>
+      </div>
+      <a href="products.html" class="view-all-link">
+        View All Products
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </a>
+    </div>
+
+    <div class="categories-grid" id="categories-grid">
+      <!-- Injected via JavaScript -->
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <section class="section-container" style="padding-top: 0;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Featured High-Performance Tech</h2>
+        <p class="section-subtitle">Real-time product catalog with instant Add-to-Cart</p>
+      </div>
+      <a href="products.html" class="view-all-link">
+        Explore Full Catalog
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </a>
+    </div>
+
+    <div class="products-grid" id="featured-products-grid">
+      <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">
+        Loading featured products from catalog...
+      </div>
+    </div>
+  </section>
+
+  <!-- How This Project Works Section (Academic Integration) -->
+  <section class="academic-section" id="how-it-works">
+    <div class="section-container" style="padding: 0;">
+      <div style="text-align: center; max-width: 780px; margin: 0 auto 3.5rem;">
+        <span class="hero-pill">Academic Subject Integration</span>
+        <h2 class="section-title" style="font-size: 2.3rem; margin-bottom: 0.75rem;">How This Project Works</h2>
+        <p class="section-subtitle">
+          Designed and implemented to demonstrate practical synergy between core computer science disciplines: Advanced Data Structures (ADSA), Discrete Mathematics (DMGT), Object-Oriented Programming (OOP), and Python Machine Learning.
+        </p>
+      </div>
+
+      <div class="academic-grid">
+        <!-- ADSA -->
+        <div class="academic-card">
+          <span class="academic-tag">ADSA Integration</span>
+          <h3 class="academic-title">Self-Balancing AVL Tree</h3>
+          <p class="academic-desc">
+            Implements an authentic Adelson-Velsky and Landis (AVL) binary search tree maintaining balance condition <code>|height(L) - height(R)| &le; 1</code>. Features Left-Left (LL), Right-Right (RR), Left-Right (LR), and Right-Left (RL) rotations. Prefix tree lookup achieves true <code>O(log N + K)</code> autocomplete lookup in <strong>&lt; 0.2 ms</strong> across 5,050 products.
+          </p>
+        </div>
+
+        <!-- DMGT -->
+        <div class="academic-card">
+          <span class="academic-tag">DMGT Integration</span>
+          <h3 class="academic-title">Set Operations for Filtering</h3>
+          <p class="academic-desc">
+            Product multi-attribute filtering is modeled mathematically using Discrete Mathematics and Graph Theory (DMGT) set algebra. Products form Universe <em>U</em>. Category sets <em>S<sub>cat</sub></em>, brand sets <em>S<sub>brand</sub></em>, price interval sets, and stock sets are combined using set union (&cup;) and intersection (&cap;):
+            <br><br>
+            <code>S<sub>result</sub> = (&cup; S<sub>cat</sub>) &cap; (&cup; S<sub>brand</sub>) &cap; S<sub>price</sub> &cap; S<sub>rating</sub> &cap; S<sub>stock</sub></code>
+          </p>
+        </div>
+
+        <!-- OOP -->
+        <div class="academic-card">
+          <span class="academic-tag">OOP Integration</span>
+          <h3 class="academic-title">Object-Oriented Design</h3>
+          <p class="academic-desc">
+            Built using strict OOP principles in both backend (Python) and frontend (JavaScript). Encapsulates domain logic into decoupled classes: <code>Product</code>, <code>CartItem</code>, <code>Cart</code>, <code>Customer</code>, <code>OrderItem</code>, <code>Order</code>, <code>SearchEngine</code>, and <code>ProductRecommender</code> with full data integrity.
+          </p>
+        </div>
+
+        <!-- Python -->
+        <div class="academic-card">
+          <span class="academic-tag">Python NLP Integration</span>
+          <h3 class="academic-title">TF-IDF & Cosine Similarity</h3>
+          <p class="academic-desc">
+            Product recommendations are calculated dynamically at runtime using Natural Language Processing (NLP). Product descriptions and specifications are converted into L2-normalized TF-IDF vector space embeddings. Cosine similarity calculates angular proximity:
+            <br><br>
+            <code>cos(&theta;) = (A &middot; B) / (||A|| &middot; ||B||)</code>
+            <br><br>
+            Top 5 similar products are returned dynamically without hardcoding.
+          </p>
+        </div>
+      </div>
+
+      <!-- Architecture Flow Diagram -->
+      <div class="architecture-flow-box">
+        <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff;">System Architecture & Execution Pipeline</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">
+          End-to-end dataflow from user query to order confirmation
+        </p>
+
+        <div class="flow-container">
+          <div class="flow-step">👤 User</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">🔍 Search</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">🌲 AVL Tree</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">📦 Products</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">🧮 DMGT Filters</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">📄 Product Details</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">🧠 Python Recommendation</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">🛒 Cart</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">💳 Checkout</div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-step">✅ Order (ORD-1001)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div>
+        <div class="brand-logo" style="margin-bottom: 0.75rem;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          <span>SmartStore</span>
+        </div>
+        <p style="max-width: 400px; color: var(--text-secondary); line-height: 1.6;">
+          College Mini-Project: Smart Search Autocomplete for an Online Store. Built with AVL Tree indexing, DMGT set operations, OOP patterns, and Python cosine similarity.
+        </p>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom: 1rem; font-size: 0.95rem;">Quick Navigation</h4>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+          <li><a href="index.html" style="color: var(--text-secondary);">Home</a></li>
+          <li><a href="products.html" style="color: var(--text-secondary);">Products Catalog</a></li>
+          <li><a href="cart.html" style="color: var(--text-secondary);">Shopping Cart</a></li>
+          <li><a href="orders.html" style="color: var(--text-secondary);">My Orders</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom: 1rem; font-size: 0.95rem;">Subject Modules</h4>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; color: var(--text-secondary);">
+          <li>ADSA: AVL Tree (O(log N))</li>
+          <li>DMGT: Set Theory Filter</li>
+          <li>OOP: Object Encapsulation</li>
+          <li>Python: Cosine Similarity TF-IDF</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Smart Search Online Store. College Mini-Project.</div>
+      <div class="mono" style="font-size: 0.8rem; color: var(--primary);">status: all modules functional</div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Category list with icons
+    const CATEGORIES = [
+      { name: "Laptops", icon: "💻" },
+      { name: "Smartphones", icon: "📱" },
+      { name: "Tablets", icon: "📟" },
+      { name: "Headphones", icon: "🎧" },
+      { name: "Earbuds", icon: "🎵" },
+      { name: "Smart Watches", icon: "⌚" },
+      { name: "Monitors", icon: "🖥️" },
+      { name: "Keyboards", icon: "⌨️" },
+      { name: "Mice", icon: "🖱️" },
+      { name: "Cameras", icon: "📷" },
+      { name: "TVs", icon: "📺" },
+      { name: "Speakers", icon: "🔊" },
+      { name: "Chargers", icon: "🔌" },
+      { name: "Power Banks", icon: "🔋" },
+      { name: "Accessories", icon: "💼" }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Render Category Chips
+      const catContainer = document.getElementById("categories-grid");
+      if (catContainer) {
+        catContainer.innerHTML = CATEGORIES.map(c => `
+          <div class="category-chip-card" onclick="window.location.href='products.html?category=${encodeURIComponent(c.name)}'">
+            <div class="cat-icon-wrap" style="font-size: 1.4rem;">${c.icon}</div>
+            <div class="cat-name">${c.name}</div>
+          </div>
+        `).join("");
+      }
+
+      // Initialize Hero Autocomplete
+      SearchEngineClient.initAutocomplete("hero-search-input", "hero-autocomplete-dropdown", true);
+
+      // Hero Search Submit Button
+      const heroSubmit = document.getElementById("hero-search-submit");
+      const heroInput = document.getElementById("hero-search-input");
+      if (heroSubmit && heroInput) {
+        heroSubmit.addEventListener("click", () => {
+          const q = heroInput.value.trim();
+          if (q) window.location.href = `products.html?q=${encodeURIComponent(q)}`;
+        });
+      }
+
+      // Load Featured Products
+      loadFeaturedProducts();
+    });
+
+    function quickSearch(term) {
+      const input = document.getElementById("hero-search-input");
+      if (input) {
+        input.value = term;
+        input.focus();
+        // Trigger autocomplete
+        input.dispatchEvent(new Event("input"));
+      }
+    }
+
+    async function loadFeaturedProducts() {
+      try {
+        const resp = await fetch("/api/products?limit=8&sort=rating_desc");
+        if (resp.ok) {
+          const data = await resp.json();
+          const grid = document.getElementById("featured-products-grid");
+          if (grid && data.products) {
+            grid.innerHTML = data.products.map(p => AppUI.renderProductCard(p)).join("");
+          }
+        }
+      } catch (err) {
+        console.error("Featured prods load error:", err);
+      }
+    }
+  </script>
+</body>
+</html>

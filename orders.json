@@ -1,0 +1,52 @@
+[
+  {
+    "orderId": "ORD-1002",
+    "customer": {
+      "name": "Jane Developer",
+      "phone": "9876543210",
+      "email": "jane.dev@college.edu",
+      "address": "404 Innovation Hub",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "pincode": "560001"
+    },
+    "items": [
+      {
+        "productId": "PROD-1001",
+        "productName": "Dell ProBook 450 Creator Series",
+        "price": 173700.0,
+        "quantity": 1,
+        "subtotal": 173700.0
+      }
+    ],
+    "totalAmount": 173700.0,
+    "paymentMethod": "Demo Online Payment (Simulated UPI)",
+    "status": "Confirmed",
+    "orderDate": "2026-09-30 10:04:39"
+  },
+  {
+    "orderId": "ORD-1001",
+    "customer": {
+      "name": "Alex Johnson",
+      "phone": "+91 98765 43210",
+      "email": "alex.johnson@example.com",
+      "address": "42 Tech Boulevard, Silicon Park",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "pincode": "560100"
+    },
+    "items": [
+      {
+        "productId": "PROD-1001",
+        "productName": "Dell ProBook 450 Creator Series - Rose Gold",
+        "price": 173700,
+        "quantity": 1,
+        "subtotal": 173700
+      }
+    ],
+    "totalAmount": 173700,
+    "paymentMethod": "Demo Cash on Delivery",
+    "status": "Confirmed",
+    "orderDate": "2026-09-30 09:50:22"
+  }
+]

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products Catalog | Smart Search & DMGT Set Operations</title>
+  <meta name="description" content="Browse electronics products with DMGT set theory multi-filtering and fast AVL tree lookup.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        <span>SmartStore</span>
+      </a>
+
+      <div class="nav-search-bar">
+        <div class="search-wrapper">
+          <div class="search-input-box">
+            <span class="search-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <input type="text" id="nav-search-input" placeholder="Search products (e.g. 'lap')..." autocomplete="off">
+            <span class="search-badge-avl">AVL Tree</span>
+          </div>
+          <div id="nav-autocomplete-dropdown" class="autocomplete-dropdown"></div>
+        </div>
+      </div>
+
+      <nav>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="products.html" class="nav-link active">Products</a></li>
+          <li><a href="index.html#how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="orders.html" class="nav-link">My Orders</a></li>
+          <li>
+            <a href="cart.html" class="cart-icon-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              <span>Cart</span>
+              <span class="cart-badge" style="display:none;">0</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle Menu">☰</button>
+    </div>
+  </header>
+
+  <!-- Main Catalog Content -->
+  <main class="section-container">
+
+    <!-- DMGT Set Operations Formula Banner -->
+    <div class="dmgt-formula-banner">
+      <div class="formula-header">
+        <div class="formula-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          DMGT Set Operations Formula
+        </div>
+        <div class="formula-stats" id="formula-stats">
+          Cardinality: |S_result| = 5,050 | Execution: 0.12 ms
+        </div>
+      </div>
+      <div class="formula-expression mono" id="formula-expression">
+        S_result = Universe (U)
+      </div>
+    </div>
+
+    <!-- Layout: Sidebar + Product Grid -->
+    <div class="catalog-layout">
+
+      <!-- Filters Sidebar -->
+      <aside class="filters-sidebar">
+        <div class="filters-header">
+          <h3 class="filters-title">Filter Products</h3>
+          <button class="btn-reset-filters" id="btn-reset-filters">Reset All</button>
+        </div>
+
+        <!-- In-Stock Toggle -->
+        <div class="filter-group">
+          <label class="filter-checkbox-label" style="font-weight: 700; color: #fff;">
+            <input type="checkbox" id="filter-stock-toggle">
+            In Stock Only
+          </label>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="filter-group">
+          <div class="filter-group-title">
+            <span>Category</span>
+            <small style="color:var(--text-muted); font-weight:normal;" id="cat-selected-count"></small>
+          </div>
+          <div class="filter-options-list" id="category-filter-list">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Brand Filter -->
+        <div class="filter-group">
+          <div class="filter-group-title">
+            <span>Brand</span>
+            <small style="color:var(--text-muted); font-weight:normal;" id="brand-selected-count"></small>
+          </div>
+          <div class="filter-options-list" id="brand-filter-list">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Price Range Filter -->
+        <div class="filter-group">
+          <div class="filter-group-title">Price Range (₹)</div>
+          <div class="price-inputs-row">
+            <input type="number" id="filter-price-min" placeholder="Min ₹" class="price-input-box" step="500">
+            <span style="color:var(--text-muted);">-</span>
+            <input type="number" id="filter-price-max" placeholder="Max ₹" class="price-input-box" step="500">
+          </div>
+        </div>
+
+        <!-- Minimum Rating Filter -->
+        <div class="filter-group">
+          <div class="filter-group-title">Customer Rating</div>
+          <div class="filter-options-list">
+            <label class="filter-checkbox-label">
+              <input type="radio" name="rating-filter" value="4.5"> ★ 4.5 & above
+            </label>
+            <label class="filter-checkbox-label">
+              <input type="radio" name="rating-filter" value="4.0"> ★ 4.0 & above
+            </label>
+            <label class="filter-checkbox-label">
+              <input type="radio" name="rating-filter" value="3.5"> ★ 3.5 & above
+            </label>
+            <label class="filter-checkbox-label">
+              <input type="radio" name="rating-filter" value="" checked> All Ratings
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-apply-filters" id="btn-apply-filters">
+          Apply DMGT Filter
+        </button>
+      </aside>
+
+      <!-- Products Display Area -->
+      <section>
+        <div class="catalog-controls-bar">
+          <div class="results-count" id="results-count">
+            Showing products...
+          </div>
+          <div>
+            <select class="sort-select-box" id="sort-select">
+              <option value="rating_desc">Sort: Highest Rated</option>
+              <option value="price_asc">Sort: Price Low to High</option>
+              <option value="price_desc">Sort: Price High to Low</option>
+              <option value="name_asc">Sort: Name (A - Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active Filter Chips Bar -->
+        <div id="active-filter-chips" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem;"></div>
+
+        <!-- Product Cards Grid -->
+        <div class="products-grid" id="catalog-products-grid">
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">
+            Querying catalog through AVL Tree & DMGT Filter Engine...
+          </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 3rem;" id="pagination-controls">
+          <button id="btn-prev-page" class="btn-primary-large" style="min-width: 120px; flex: initial; padding: 0.6rem 1.2rem; display: none;">&larr; Previous</button>
+          <span id="page-indicator" style="font-weight: 700; color: var(--text-secondary); display: none;">Page 1</span>
+          <button id="btn-next-page" class="btn-primary-large" style="min-width: 120px; flex: initial; padding: 0.6rem 1.2rem; display: none;">Next &rarr;</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div>
+        <div class="brand-logo" style="margin-bottom: 0.75rem;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          <span>SmartStore</span>
+        </div>
+        <p style="max-width: 400px; color: var(--text-secondary); line-height: 1.6;">
+          College Mini-Project: Smart Search Autocomplete for an Online Store.
+        </p>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom: 1rem; font-size: 0.95rem;">Quick Navigation</h4>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+          <li><a href="index.html" style="color: var(--text-secondary);">Home</a></li>
+          <li><a href="products.html" style="color: var(--text-secondary);">Products Catalog</a></li>
+          <li><a href="cart.html" style="color: var(--text-secondary);">Shopping Cart</a></li>
+          <li><a href="orders.html" style="color: var(--text-secondary);">My Orders</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom: 1rem; font-size: 0.95rem;">Subject Integration</h4>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+          DMGT: Multi-attribute set operations (∩ and ∪)<br>
+          ADSA: AVL Tree indexing & search<br>
+          Python: TF-IDF Cosine Similarity
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Smart Search Online Store. College Mini-Project.</div>
+      <div class="mono" style="font-size: 0.8rem; color: var(--primary);">Search Method: AVL Tree (O(log N))</div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // URL Query Parameter Handling
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get("q") || "";
+    const initialCategory = urlParams.get("category") || "";
+
+    let dmgtClient;
+    let currentPage = 1;
+    let totalPages = 1;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Initialize DMGT Client
+      dmgtClient = new DMGTFilterClient(handleFilterResults);
+
+      if (initialCategory) {
+        dmgtClient.categories.add(initialCategory);
+      }
+
+      // Populate Categories & Brands in Filter Sidebar
+      await loadFilterMetadata();
+
+      // If search query is present in URL, execute AVL search or DMGT filter
+      if (initialQuery) {
+        document.getElementById("nav-search-input").value = initialQuery;
+        executeSearchQuery(initialQuery);
+      } else {
+        dmgtClient.executeFilter();
+      }
+
+      // Bind events
+      document.getElementById("btn-apply-filters").addEventListener("click", () => {
+        readFiltersFromUI();
+        dmgtClient.currentPage = 1;
+        dmgtClient.executeFilter();
+      });
+
+      document.getElementById("btn-reset-filters").addEventListener("click", () => {
+        resetFiltersUI();
+        dmgtClient.reset();
+      });
+
+      document.getElementById("sort-select").addEventListener("change", (e) => {
+        dmgtClient.sortBy = e.target.value;
+        dmgtClient.executeFilter();
+      });
+
+      document.getElementById("btn-prev-page").addEventListener("click", () => {
+        if (dmgtClient.currentPage > 1) {
+          dmgtClient.currentPage--;
+          dmgtClient.executeFilter();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+
+      document.getElementById("btn-next-page").addEventListener("click", () => {
+        if (dmgtClient.currentPage < totalPages) {
+          dmgtClient.currentPage++;
+          dmgtClient.executeFilter();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    });
+
+    async function loadFilterMetadata() {
+      try {
+        const resp = await fetch("/api/meta");
+        if (!resp.ok) return;
+        const meta = await resp.json();
+
+        // Render Categories Checkboxes
+        const catContainer = document.getElementById("category-filter-list");
+        catContainer.innerHTML = meta.categories.map(c => `
+          <label class="filter-checkbox-label">
+            <input type="checkbox" value="${c}" class="filter-cat-chk" ${initialCategory === c ? 'checked' : ''}>
+            <span>${c}</span>
+          </label>
+        `).join("");
+
+        // Render Brands Checkboxes
+        const brandContainer = document.getElementById("brand-filter-list");
+        brandContainer.innerHTML = meta.brands.map(b => `
+          <label class="filter-checkbox-label">
+            <input type="checkbox" value="${b}" class="filter-brand-chk">
+            <span>${b}</span>
+          </label>
+        `).join("");
+
+      } catch (err) {
+        console.error("Meta load error:", err);
+      }
+    }
+
+    function readFiltersFromUI() {
+      dmgtClient.categories.clear();
+      document.querySelectorAll(".filter-cat-chk:checked").forEach(chk => {
+        dmgtClient.categories.add(chk.value);
+      });
+
+      dmgtClient.brands.clear();
+      document.querySelectorAll(".filter-brand-chk:checked").forEach(chk => {
+        dmgtClient.brands.add(chk.value);
+      });
+
+      const minVal = document.getElementById("filter-price-min").value;
+      const maxVal = document.getElementById("filter-price-max").value;
+      dmgtClient.minPrice = minVal ? parseFloat(minVal) : null;
+      dmgtClient.maxPrice = maxVal ? parseFloat(maxVal) : null;
+
+      const checkedRating = document.querySelector('input[name="rating-filter"]:checked');
+      dmgtClient.minRating = checkedRating && checkedRating.value ? parseFloat(checkedRating.value) : null;
+
+      dmgtClient.inStockOnly = document.getElementById("filter-stock-toggle").checked;
+    }
+
+    function resetFiltersUI() {
+      document.querySelectorAll(".filter-cat-chk").forEach(c => c.checked = false);
+      document.querySelectorAll(".filter-brand-chk").forEach(b => b.checked = false);
+      document.getElementById("filter-price-min").value = "";
+      document.getElementById("filter-price-max").value = "";
+      document.getElementById("filter-stock-toggle").checked = false;
+      const allRating = document.querySelector('input[name="rating-filter"][value=""]');
+      if (allRating) allRating.checked = true;
+    }
+
+    function handleFilterResults(data, formulaStr) {
+      const grid = document.getElementById("catalog-products-grid");
+      const exprEl = document.getElementById("formula-expression");
+      const statsEl = document.getElementById("formula-stats");
+      const countEl = document.getElementById("results-count");
+
+      // Update Formula Expression & Stats
+      exprEl.textContent = data.math_formula || formulaStr;
+      statsEl.innerHTML = `Set Cardinality: |S_result| = <strong>${data.total}</strong> | Execution Time: <strong>${data.filter_time_ms} ms</strong>`;
+
+      countEl.innerHTML = `Showing <strong>${data.products ? data.products.length : 0}</strong> of <strong>${data.total}</strong> matching products`;
+
+      // Render Cards
+      if (!data.products || data.products.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+            <h3 style="color:#fff; margin-bottom: 0.5rem;">No products found in intersection set</h3>
+            <p>Try broadening your DMGT filter criteria or clearing brand/price constraints.</p>
+          </div>
+        `;
+      } else {
+        grid.innerHTML = data.products.map(p => AppUI.renderProductCard(p)).join("");
+      }
+
+      // Update Pagination
+      totalPages = data.total_pages || 1;
+      currentPage = data.page || 1;
+      const prevBtn = document.getElementById("btn-prev-page");
+      const nextBtn = document.getElementById("btn-next-page");
+      const pageInd = document.getElementById("page-indicator");
+
+      if (totalPages > 1) {
+        prevBtn.style.display = currentPage > 1 ? "block" : "none";
+        nextBtn.style.display = currentPage < totalPages ? "block" : "none";
+        pageInd.style.display = "block";
+        pageInd.textContent = `Page ${currentPage} of ${totalPages}`;
+      } else {
+        prevBtn.style.display = "none";
+        nextBtn.style.display = "none";
+        pageInd.style.display = "none";
+      }
+    }
+
+    async function executeSearchQuery(query) {
+      try {
+        const resp = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        if (!resp.ok) return;
+        const data = await resp.json();
+
+        const grid = document.getElementById("catalog-products-grid");
+        const exprEl = document.getElementById("formula-expression");
+        const statsEl = document.getElementById("formula-stats");
+        const countEl = document.getElementById("results-count");
+
+        exprEl.innerHTML = `Search Method: <strong>AVL Tree (O(log N))</strong> for query: "<em>${query}</em>"`;
+        statsEl.innerHTML = `Tree Height: <strong>${data.tree_height}</strong> | AVL Search Time: <strong>${data.search_time_ms} ms</strong>`;
+        countEl.innerHTML = `Found <strong>${data.total}</strong> products matching "<strong>${query}</strong>"`;
+
+        if (!data.products || data.products.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+              <h3>No exact match found in AVL tree for "${query}"</h3>
+            </div>
+          `;
+        } else {
+          grid.innerHTML = data.products.map(p => AppUI.renderProductCard(p)).join("");
+        }
+
+        // Hide pagination for search result list
+        document.getElementById("pagination-controls").style.display = "none";
+      } catch (e) {
+        console.error("Search query error:", e);
+      }
+    }
+  </script>
+</body>
+</html>
